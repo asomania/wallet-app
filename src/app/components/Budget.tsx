@@ -24,46 +24,61 @@ const Budget = ({
 
   const limits = useSelector((state: RootState) => state.transactions.limits);
 
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState({
+    key: categories[0].categoryKey,
+    value: categories[0].category,
+  });
   const [description, setDescription] = useState("");
-  const [valueLimit, setValueLimit] = useState(0);
+  const [valueLimit, setValueLimit] = useState<number | null>(
+    categories.find((limit) => limit.categoryKey === category.key)?.amount || 0
+  );
   const [amount, setAmount] = useState(0);
   const [date, setDate] = useState("");
+  const [counter, setCounter] = useState(0);
   const dispatch = useDispatch();
   const [limitError, setLimitError] = useState(false);
   useEffect(() => {
     dispatch(loadLimits());
     setLimitError(false);
-    setCategory("");
     setDescription("");
     setAmount(0);
     setDate("");
   }, []);
+
   useEffect(() => {
+    setCounter(counter + 1);
+    console.log(counter, category);
     setValueLimit(
-      limits.find((limit) => limit.categoryKey === category)?.amount ||
-        categories[0].amount
+      categories.find((limit) => limit.categoryKey === category.key)?.amount ||
+        0
     );
+    console.log("deneme", valueLimit);
   }, [categories]);
 
   const handleAddTransaction = () => {
-    const limit = limits.find((limit) => limit.categoryKey === category);
-    setValueLimit(limit?.amount || 0);
-    if (limit?.amount && amount > limit.amount) {
+    console.log("amount", amount);
+    if (
+      (valueLimit === 0 || valueLimit) &&
+      activeTab === "Gider" &&
+      amount > valueLimit
+    ) {
       setLimitError(true);
+      console.log("limit aşıldı");
       dispatch(
         addNotification({
           id: Date.now().toString(),
-          message: `${limit.category} kategorisi için bütçe aşıldı.`,
+          message: `${category.value} kategorisi için bütçe aşıldı.`,
         })
       );
     } else {
+      setLimitError(false);
+      console.log("eklendi");
       dispatch(
         addLimit({
           id: Date.now().toString(),
-          categoryKey: category ? category : categories[0].categoryKey,
-          category: category ? category : categories[0].category,
-          amount: valueLimit,
+          categoryKey: category ? category.key : categories[0].categoryKey,
+          category: category ? category.value : categories[0].category,
+          amount: valueLimit || 0,
         })
       );
       console.log("category", category);
@@ -77,7 +92,7 @@ const Budget = ({
           description: description,
           amount: amount,
           date: date,
-          category: category ? category : categories[0].category,
+          category: category ? category.value : categories[0].category,
         })
       );
     }
@@ -115,8 +130,15 @@ const Budget = ({
                     id="amount"
                     className="border-2 h-10 border-gray-300 rounded-md p-2"
                     placeholder="Miktar"
-                    value={amount}
-                    onChange={(e) => setAmount(Number(e.target.value))}
+                    value={amount !== 0 ? amount : ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === "") {
+                        setAmount(0);
+                      } else {
+                        setAmount(Number(value));
+                      }
+                    }}
                   />
                 </div>
                 <div className="flex flex-row items-center gap-2">
@@ -126,10 +148,15 @@ const Budget = ({
                       key: category.categoryKey,
                       value: category.category,
                     }))}
-                    value={category || categories[0].categoryKey}
+                    value={category.key || categories[0].categoryKey}
                     onChange={(value) => {
                       console.log(value);
-                      setCategory(value);
+                      setCategory({
+                        key: value,
+                        value:
+                          categories.find((cat) => cat.categoryKey === value)
+                            ?.category || "",
+                      });
                       setValueLimit(
                         categories.find((cat) => cat.categoryKey === value)
                           ?.amount || 0
@@ -157,17 +184,24 @@ const Budget = ({
                 <input
                   type="number"
                   id="limit"
-                  placeholder="Limit"
+                  placeholder="Limit belirleyin"
                   className="border-2 h-10 w-full border-gray-300 rounded-md p-2"
-                  value={valueLimit}
-                  onChange={(e) => setValueLimit(Number(e.target.value))}
+                  value={valueLimit !== null ? valueLimit : ""}
+                  onChange={(e) => {
+                    console.log(e.target.value);
+                    if (e.target.value === "") {
+                      setValueLimit(null);
+                    } else {
+                      setValueLimit(Number(e.target.value));
+                    }
+                  }}
                 />
               </div>
             </div>
           </div>
           <div className="flex justify-end">
             {limitError && (
-              <p className="text-red-500">Bütçe aşıldı. Eklenemiyor.</p>
+              <p className="text-red-500">Limit aşıldı. Eklenemiyor.</p>
             )}
           </div>
           <button
