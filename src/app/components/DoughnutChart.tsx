@@ -1,30 +1,37 @@
-"use client";
 import React, { useEffect, useRef } from "react";
 import { Chart, ArcElement, Tooltip, DoughnutController } from "chart.js";
 
 Chart.register(ArcElement, Tooltip, DoughnutController);
+
 const DoughnutChart = ({
   data,
 }: {
   data: { totalBudget: number; spent: number };
 }) => {
   const chartRef = useRef<HTMLCanvasElement | null>(null);
-  const totalBudget = data.totalBudget;
-  const spent = data.spent;
+  const chartInstanceRef = useRef<Chart<"doughnut"> | null>(null);
 
-  const spentPercentage = (spent / totalBudget) * 100;
-  const remainingPercentage = 100 - spentPercentage;
+  const { totalBudget, spent } = data;
+
+  const remainingPercentage =
+    spent > totalBudget ? 0 : ((totalBudget - spent) / totalBudget) * 100;
+  const spentPercentage =
+    spent > totalBudget ? 100 : (spent / totalBudget) * 100;
 
   useEffect(() => {
+    if (chartInstanceRef.current) {
+      chartInstanceRef.current.destroy();
+    }
+
     const ctx = chartRef.current?.getContext("2d");
     if (ctx) {
-      new Chart(ctx, {
+      chartInstanceRef.current = new Chart<"doughnut">(ctx, {
         type: "doughnut",
         data: {
-          labels: ["Harcanan", "Kalan"],
+          labels: ["Kalan", "Harcanan"],
           datasets: [
             {
-              data: [spentPercentage, remainingPercentage],
+              data: [remainingPercentage, spentPercentage],
               backgroundColor: ["#3B82F6", "#E5E7EB"],
               borderWidth: 2,
               borderAlign: "inner",
@@ -35,11 +42,37 @@ const DoughnutChart = ({
         options: {
           cutout: "85%",
           responsive: true,
-          plugins: {},
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function (tooltipItem) {
+                  return `${tooltipItem.label}: ${Number(
+                    tooltipItem.raw as number
+                  ).toFixed(2)}%`;
+                },
+              },
+            },
+          },
         },
       });
     }
-  }, [spentPercentage, remainingPercentage]);
+
+    return () => {
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.destroy();
+      }
+    };
+  }, [remainingPercentage, spentPercentage]);
+
+  if (totalBudget <= 0) {
+    return (
+      <div className="dark:bg-black bg-white w-full">
+        <div style={{ textAlign: "center", padding: "20px", color: "red" }}>
+          Gelir sıfır veya negatif olamaz!
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="dark:bg-black bg-white w-full">
@@ -47,8 +80,8 @@ const DoughnutChart = ({
         <div
           style={{
             position: "relative",
-            width: "200px",
-            height: "200px",
+            width: "150px",
+            height: "150px",
           }}
         >
           <canvas ref={chartRef} />
@@ -60,11 +93,16 @@ const DoughnutChart = ({
               transform: "translate(-50%, -50%)",
               textAlign: "center",
               fontSize: "18px",
-              color: "#000",
+              color: spent > totalBudget ? "red" : "#000",
             }}
           >
-            {Number(spentPercentage).toFixed(2)}% <br />
-            <span style={{ fontSize: "12px", color: "gray" }}>Harcanan</span>
+            {spent > totalBudget
+              ? "Bütçe Aşıldı"
+              : `${Number(remainingPercentage).toFixed(2)}%`}
+            <br />
+            <span style={{ fontSize: "12px", color: "gray" }}>
+              {spent > totalBudget ? "Harcama fazla" : "Kalan"}
+            </span>
           </div>
         </div>
       </div>

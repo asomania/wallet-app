@@ -1,7 +1,12 @@
 import React from "react";
 
+type Option = {
+  key: string;
+  value: string;
+};
+
 interface DropdownProps {
-  options: string[];
+  options: Option[];
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
@@ -23,8 +28,8 @@ const Dropdown: React.FC<DropdownProps> = ({
         {placeholder}
       </option>
       {options.map((option) => (
-        <option key={option} value={option}>
-          {option}
+        <option key={option.key} value={option.key}>
+          {option.value}
         </option>
       ))}
     </select>

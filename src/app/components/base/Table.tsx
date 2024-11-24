@@ -1,10 +1,15 @@
 import React from "react";
 
-type TableData = Record<string, string | number>;
+type TableData = Record<
+  string,
+  string | number | { label: string; key: string }
+>;
+
 interface Header {
   label: string;
   key: string;
 }
+
 interface TableProps {
   headers: Header[];
   data: TableData[];
@@ -52,9 +57,12 @@ const Table: React.FC<TableProps> = ({
               {headers.map((header, cellIndex) => (
                 <div
                   key={cellIndex}
-                  className="text-sm text-gray-900 dark:text-gray-300 px-6 py-4 "
+                  className="text-sm text-gray-900 dark:text-gray-300 px-6 py-4"
                 >
-                  {row[header.key]?.toString() || "-"}{" "}
+                  {typeof row[header.key] === "object" &&
+                  row[header.key] !== null
+                    ? (row[header.key] as { label: string }).label || "-"
+                    : row[header.key]?.toString() || "-"}
                 </div>
               ))}
             </div>
