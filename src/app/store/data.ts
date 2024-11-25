@@ -45,6 +45,30 @@ const initialState: TransactionState = {
       category: "Alışveriş",
       amount: 0,
     },
+    {
+      id: "4",
+      categoryKey: "health",
+      category: "Sağlık",
+      amount: 0,
+    },
+    {
+      id: "5",
+      categoryKey: "education",
+      category: "Eğitim",
+      amount: 0,
+    },
+    {
+      id: "6",
+      categoryKey: "entertainment",
+      category: "Eğlence",
+      amount: 0,
+    },
+    {
+      id: "7",
+      categoryKey: "other",
+      category: "Diğer",
+      amount: 0,
+    },
   ],
 };
 

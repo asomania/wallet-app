@@ -1,14 +1,32 @@
 import React from "react";
-
-type TableData = Record<
-  string,
-  string | number | { label: string; key: string }
->;
-
-interface Header {
+type Header = {
   label: string;
   key: string;
-}
+};
+type TableData = Record<string, string | number | object>;
+
+const downloadCSV = (headers: Header[], data: TableData[]) => {
+  const headerRow = headers.map((header) => header.label).join(",");
+  const dataRows = data
+    .map((row) =>
+      headers
+        .map((header) => {
+          const value = row[header.key];
+          return typeof value === "object" && value !== null
+            ? (value as { label: string }).label
+            : value?.toString() || "";
+        })
+        .join(",")
+    )
+    .join("\n");
+
+  const csvContent = `${headerRow}\n${dataRows}`;
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "table_data.csv";
+  link.click();
+};
 
 interface TableProps {
   headers: Header[];
@@ -68,6 +86,14 @@ const Table: React.FC<TableProps> = ({
             </div>
           ))}
         </div>
+      </div>
+      <div className="flex justify-end">
+        <button
+          onClick={() => downloadCSV(headers, data)}
+          className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md"
+        >
+          Veriyi İndir
+        </button>
       </div>
     </div>
   );

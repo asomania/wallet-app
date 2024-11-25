@@ -10,9 +10,27 @@ interface BudgetProps {
   activeTab: string;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  transactions: Transaction[];
 }
 
-const Budget: React.FC<BudgetProps> = ({ activeTab, isOpen, setIsOpen }) => {
+export type Transaction = {
+  id: string;
+  type: {
+    key: "income" | "expense";
+    label: string;
+  };
+  description: string;
+  amount: number;
+  date: string;
+  category: string;
+};
+
+const Budget: React.FC<BudgetProps> = ({
+  activeTab,
+  isOpen,
+  setIsOpen,
+  transactions,
+}) => {
   const dispatch = useDispatch();
 
   const categories = useSelector(
@@ -26,16 +44,15 @@ const Budget: React.FC<BudgetProps> = ({ activeTab, isOpen, setIsOpen }) => {
 
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState<number>(0);
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [valueLimit, setValueLimit] = useState<number | null>(null);
+  const [amountError, setAmountError] = useState(false);
   const [limitError, setLimitError] = useState(false);
 
-  // Load limits on component mount
   useEffect(() => {
     dispatch(loadLimits());
   }, [dispatch]);
 
-  // Set initial category and valueLimit when categories change
   useEffect(() => {
     if (categories.length > 0) {
       const initialCategory = categories[0];
@@ -47,32 +64,36 @@ const Budget: React.FC<BudgetProps> = ({ activeTab, isOpen, setIsOpen }) => {
     }
   }, [categories]);
 
+  const totalLimitCheck = (categoryKey: string | undefined) => {
+    const totalLimit = transactions.reduce(
+      (acc: number, transaction: Transaction) =>
+        acc + (transaction.category === categoryKey ? transaction.amount : 0),
+      0
+    );
+    return totalLimit;
+  };
   const handleAddTransaction = () => {
     if (amount <= 0) {
-      setLimitError(true);
-      dispatch(
-        addNotification({
-          id: Date.now().toString(),
-          message: "Miktar sıfırdan büyük olmalıdır.",
-        })
-      );
+      setAmountError(true);
       return;
     }
-
-    if (valueLimit !== null && activeTab === "Gider" && amount > valueLimit) {
+    const totalLimit = totalLimitCheck(category?.value) + amount;
+    if (
+      valueLimit !== null &&
+      activeTab === "Gider" &&
+      totalLimit > valueLimit
+    ) {
       setLimitError(true);
       dispatch(
         addNotification({
           id: Date.now().toString(),
           message: `${category?.value || ""} kategorisi için bütçe aşıldı.`,
+          createdAt: new Date(),
         })
       );
       return;
     }
-
     setLimitError(false);
-
-    // Add limit if necessary
     if (valueLimit !== null) {
       dispatch(
         addLimit({
@@ -84,7 +105,21 @@ const Budget: React.FC<BudgetProps> = ({ activeTab, isOpen, setIsOpen }) => {
       );
     }
 
-    // Add transaction
+    if (
+      valueLimit !== null &&
+      totalLimit > valueLimit * 0.8 &&
+      activeTab === "Gider"
+    ) {
+      dispatch(
+        addNotification({
+          id: Date.now().toString(),
+          message: `${
+            category?.value || ""
+          } kategorisi için bütçe %80'i aşıldı.`,
+          createdAt: new Date(),
+        })
+      );
+    }
     dispatch(
       addTransaction({
         id: Date.now().toString(),
@@ -99,7 +134,6 @@ const Budget: React.FC<BudgetProps> = ({ activeTab, isOpen, setIsOpen }) => {
       })
     );
 
-    // Reset form
     setDescription("");
     setAmount(0);
     setDate("");
@@ -174,20 +208,27 @@ const Budget: React.FC<BudgetProps> = ({ activeTab, isOpen, setIsOpen }) => {
               onChange={(e) => setDate(e.target.value)}
             />
           </div>
-          <div className="flex items-center gap-2">
-            <label htmlFor="limit">Limit:</label>
-            <input
-              type="number"
-              id="limit"
-              className="border-2 h-10 w-full border-gray-300 rounded-md p-2"
-              placeholder="Limit belirleyin"
-              value={valueLimit !== null ? valueLimit : ""}
-              onChange={(e) => setValueLimit(Number(e.target.value) || null)}
-            />
-          </div>
+          {activeTab === "Gider" && (
+            <div className="flex items-center gap-2">
+              <label htmlFor="limit">Limit:</label>
+              <input
+                type="number"
+                id="limit"
+                className="border-2 h-10 w-full border-gray-300 rounded-md p-2"
+                placeholder="Limit belirleyin"
+                value={valueLimit !== null ? valueLimit : ""}
+                onChange={(e) => setValueLimit(Number(e.target.value) || null)}
+              />
+            </div>
+          )}
         </div>
         {limitError && (
           <p className="text-red-500 text-sm">Hata: Limit aşıldı.</p>
+        )}
+        {amountError && (
+          <p className="text-red-500 text-sm">
+            Hata: Miktar sıfırdan büyük olmalıdır.
+          </p>
         )}
         <button
           className="bg-blue-500 text-white p-2 rounded-md"

@@ -4,11 +4,21 @@ import "../globals.css";
 import Image from "next/image";
 import { Provider } from "react-redux";
 import { store } from "../store/store";
+import ThemeSwitch from "../components/base/ThemeSwitch";
+import { Theme } from "../store/theme";
 export default function DasboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const switchTheme = (theme: Theme) => {
+    if (theme === "light") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  };
+
   return (
     <html>
       <body>
@@ -17,7 +27,8 @@ export default function DasboardLayout({
             <div className="flex flex-col w-64 h-screen px-5 py-8 overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700">
               <div className="flex gap-5 items-center">
                 <Image src="/logo.png" alt="logo" height={40} width={30} />
-                <p className="text-white text-xl">Wallet app</p>
+                <p className="text-black dark:text-white text-xl">Wallet app</p>
+                <ThemeSwitch switchTheme={switchTheme} />
               </div>
               <div className="flex flex-col justify-between flex-1 mt-6">
                 <nav className="-mx-3 space-y-6 ">

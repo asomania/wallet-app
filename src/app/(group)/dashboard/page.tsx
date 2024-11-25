@@ -9,6 +9,7 @@ import { loadTransactions } from "@/app/store/data";
 import { useEffect, useState } from "react";
 import Notifications from "@/app/components/Notifications";
 import Limit from "@/app/components/Limit";
+
 const Dashboard = () => {
   const dispatch = useDispatch();
   const transactions = useSelector(
@@ -26,6 +27,7 @@ const Dashboard = () => {
         activeTab={activeTab}
         isOpen={isBudgetOpen}
         setIsOpen={setIsBudgetOpen}
+        transactions={transactions}
       />
       <Limit isOpen={isLimitOpen} setIsOpen={setIsLimitOpen} />
       <div className="grid grid-cols-12 gap-4 max-h-[30vh] p-4">
@@ -38,7 +40,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      <div className="px-4 py-10">
+      <div className="px-4 py-16 flex flex-col gap-4">
         <div className="flex flex-row items-center gap-3 justify-center">
           <button
             onClick={() => {

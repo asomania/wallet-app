@@ -66,7 +66,7 @@ const DoughnutChart = ({
 
   if (totalBudget <= 0) {
     return (
-      <div className="dark:bg-black bg-white w-full">
+      <div className=" w-full">
         <div style={{ textAlign: "center", padding: "20px", color: "red" }}>
           Gelir sıfır veya negatif olamaz!
         </div>
@@ -75,8 +75,8 @@ const DoughnutChart = ({
   }
 
   return (
-    <div className="dark:bg-black bg-white w-full">
-      <div>
+    <div className=" w-full">
+      <div className="flex justify-center items-center">
         <div
           style={{
             position: "relative",
@@ -86,6 +86,7 @@ const DoughnutChart = ({
         >
           <canvas ref={chartRef} />
           <div
+            className="flex flex-col"
             style={{
               position: "absolute",
               top: "50%",
@@ -96,11 +97,12 @@ const DoughnutChart = ({
               color: spent > totalBudget ? "red" : "#000",
             }}
           >
-            {spent > totalBudget
-              ? "Bütçe Aşıldı"
-              : `${Number(remainingPercentage).toFixed(2)}%`}
-            <br />
-            <span style={{ fontSize: "12px", color: "gray" }}>
+            <p className="dark:text-white text-xl">
+              {spent > totalBudget
+                ? "Bütçe Aşıldı"
+                : `${Number(remainingPercentage).toFixed(2)}%`}
+            </p>
+            <span className="dark:text-white text-xl font-bold">
               {spent > totalBudget ? "Harcama fazla" : "Kalan"}
             </span>
           </div>
