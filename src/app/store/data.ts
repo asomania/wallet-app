@@ -17,6 +17,10 @@ export type Limit = {
   categoryKey: string;
   category: string;
   amount: number;
+  type: {
+    key: "income" | "expense";
+    label: string;
+  };
 };
 
 interface TransactionState {
@@ -33,42 +37,110 @@ const initialState: TransactionState = {
       categoryKey: "food",
       category: "Yemek",
       amount: 0,
+      type: {
+        key: "expense",
+        label: "Gider",
+      },
     },
     {
       id: "2",
-      categoryKey: "transport",
-      category: "Taşımacılık",
+      categoryKey: "gas",
+      category: "Benzin",
       amount: 0,
+      type: {
+        key: "expense",
+        label: "Gider",
+      },
     },
     {
       id: "3",
       categoryKey: "shopping",
       category: "Alışveriş",
       amount: 0,
+      type: {
+        key: "expense",
+        label: "Gider",
+      },
     },
     {
       id: "4",
       categoryKey: "health",
       category: "Sağlık",
       amount: 0,
+      type: {
+        key: "expense",
+        label: "Gider",
+      },
     },
     {
       id: "5",
       categoryKey: "education",
       category: "Eğitim",
       amount: 0,
+      type: {
+        key: "expense",
+        label: "Gider",
+      },
     },
     {
       id: "6",
       categoryKey: "entertainment",
       category: "Eğlence",
       amount: 0,
+      type: {
+        key: "expense",
+        label: "Gider",
+      },
     },
     {
       id: "7",
       categoryKey: "other",
       category: "Diğer",
       amount: 0,
+      type: {
+        key: "income",
+        label: "Gelir",
+      },
+    },
+    {
+      id: "8",
+      categoryKey: "salary",
+      category: "Maaş",
+      amount: 0,
+      type: {
+        key: "income",
+        label: "Gelir",
+      },
+    },
+    {
+      id: "9",
+      categoryKey: "debt",
+      category: "Borç geliri",
+      amount: 0,
+      type: {
+        key: "income",
+        label: "Gelir",
+      },
+    },
+    {
+      id: "10",
+      categoryKey: "trade",
+      category: "Ticaret",
+      amount: 0,
+      type: {
+        key: "income",
+        label: "Gelir",
+      },
+    },
+    {
+      id: "11",
+      categoryKey: "investment",
+      category: "Yatırım",
+      amount: 0,
+      type: {
+        key: "income",
+        label: "Gelir",
+      },
     },
   ],
   filteredTransactions: [],

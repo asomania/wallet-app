@@ -10,11 +10,11 @@ import Notifications from "@/app/components/Notifications";
 import { IoSearchOutline } from "react-icons/io5";
 import {
   searchTransactions,
-  loadTransactions,
   clearSearch,
   searchByDescription,
 } from "@/app/store/data";
 import { IoCloseOutline, IoCalendar } from "react-icons/io5";
+import useLoadTransactions from "@/app/hooks/useLoadTransactions";
 const Dashboard = () => {
   const dispatch = useDispatch();
   const transactions = useSelector(
@@ -29,6 +29,7 @@ const Dashboard = () => {
   const [startDate, setStartDate] = useState<string | null>(null);
   const [endDate, setEndDate] = useState<string | null>(null);
   const [isSearchActive, setIsSearchActive] = useState(false);
+  useLoadTransactions();
 
   const handleSearch = () => {
     if (startDate && endDate) {
@@ -48,9 +49,6 @@ const Dashboard = () => {
     setIsSearchActive(true);
     dispatch(searchByDescription(description));
   };
-  useEffect(() => {
-    dispatch(loadTransactions());
-  }, []);
   return (
     <div className="dark:bg-black relative bg-white w-full min-h-screen">
       <Budget
@@ -88,13 +86,13 @@ const Dashboard = () => {
             <div className="relative">
               <input
                 type="date"
-                className="border-2 border-gray-300 rounded-md p-2 dark:bg-gray-800 dark:text-gray-300 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all pointer-events-none"
+                className="border-2 border-gray-300 rounded-md p-2 dark:bg-gray-800 dark:text-gray-300 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all "
                 value={endDate || ""}
                 onChange={(e) => setEndDate(e.target.value)}
               />
               <IoCalendar
                 size={20}
-                className="absolute top-3 right-3 text-gray-500 dark:text-gray-300"
+                className="absolute top-3 right-3 text-gray-500 dark:text-gray-300 pointer-events-none"
               />
             </div>
             <button

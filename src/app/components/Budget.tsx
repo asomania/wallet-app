@@ -3,10 +3,11 @@ import React, { useState, useEffect } from "react";
 import Dropdown from "./base/Dropdown";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { loadLimits, addLimit, addTransaction } from "../store/data";
+import { addLimit, addTransaction } from "../store/data";
 import { addNotification } from "../store/notifications";
 import { IoCalendar, IoClose } from "react-icons/io5";
 import { Transaction } from "../store/data";
+import useLoadLimits from "../hooks/useLoadLimits";
 
 interface BudgetProps {
   activeTab: string;
@@ -39,9 +40,7 @@ const Budget: React.FC<BudgetProps> = ({
   const [amountError, setAmountError] = useState(false);
   const [limitError, setLimitError] = useState(false);
 
-  useEffect(() => {
-    dispatch(loadLimits());
-  }, [dispatch]);
+  useLoadLimits();
 
   useEffect(() => {
     if (categories.length > 0) {
@@ -79,7 +78,7 @@ const Budget: React.FC<BudgetProps> = ({
         addNotification({
           id: Date.now().toString(),
           message: `${category?.value || ""} kategorisi için bütçe aşıldı.`,
-          createdAt: new Date(),
+          createdAt: new Date().toISOString(),
         })
       );
       return;
@@ -92,6 +91,10 @@ const Budget: React.FC<BudgetProps> = ({
           categoryKey: category?.key || "",
           category: category?.value || "",
           amount: valueLimit,
+          type: {
+            key: activeTab === "Gelir" ? "income" : "expense",
+            label: activeTab,
+          },
         })
       );
     }
@@ -107,7 +110,7 @@ const Budget: React.FC<BudgetProps> = ({
           message: `${
             category?.value || ""
           } kategorisi için bütçe %80'i aşıldı.`,
-          createdAt: new Date(),
+          createdAt: new Date().toISOString(),
         })
       );
     }
@@ -143,6 +146,15 @@ const Budget: React.FC<BudgetProps> = ({
     }
   };
 
+  const handleClose = () => {
+    setDescription("");
+    setAmount(0);
+    setDate(new Date().toISOString().split("T")[0]);
+    setLimitError(false);
+    setAmountError(false);
+    setIsOpen(false);
+  };
+
   return (
     <div
       className={`absolute h-full w-full flex justify-center items-center ${
@@ -154,7 +166,7 @@ const Budget: React.FC<BudgetProps> = ({
           <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
             {activeTab} Ekle
           </h2>
-          <button onClick={() => setIsOpen(false)}>
+          <button onClick={handleClose}>
             <IoClose size={20} className="text-gray-500 dark:text-gray-300" />
           </button>
         </div>
@@ -198,10 +210,12 @@ const Budget: React.FC<BudgetProps> = ({
               Kategori:
             </label>
             <Dropdown
-              options={categories.map((cat) => ({
-                key: cat.categoryKey,
-                value: cat.category,
-              }))}
+              options={categories
+                .filter((cat) => cat.type.label === activeTab)
+                .map((cat) => ({
+                  key: cat.categoryKey,
+                  value: cat.category,
+                }))}
               value={category?.key || ""}
               onChange={handleCategoryChange}
               placeholder="Kategori seçiniz"
