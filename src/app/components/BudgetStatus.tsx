@@ -28,8 +28,8 @@ const BudgetStatus = () => {
   }, 0);
 
   return (
-    <>
-      <div>
+    <div className="grid lg:grid-cols-3 grid-cols-1  flex-wrap w-full justify-center items-center gap-4">
+      <div className="flex flex-col justify-center items-center gap-4">
         <h2 className="text-xl font-semibold dark:text-white">Bütçe Durumu</h2>
         {transactions.length ? (
           <DoughnutChart
@@ -39,7 +39,8 @@ const BudgetStatus = () => {
           <p className="text-center text-gray-500">Henüz bütçe eklenmemiş.</p>
         )}
       </div>
-      <div className="flex flex-row justify-center items-center gap-4 border-l-4 border-gray-200 pl-16">
+
+      <div className="flex flex-row justify-center items-center gap-4 border-gray-200  ">
         <div className="bg-green-200 w-20 h-20 rounded-full flex justify-center items-center">
           <TbUserDollar size={50} className="text-green-500" />
         </div>
@@ -54,7 +55,7 @@ const BudgetStatus = () => {
         </div>
       </div>
 
-      <div className="flex flex-row justify-center items-center gap-4 border-l-4 border-gray-200 pl-16">
+      <div className="flex flex-row justify-center items-center gap-4  border-gray-200 ">
         <div className="bg-red-200 w-20 h-20 rounded-full flex justify-center items-center">
           <TbUserDollar size={50} className="text-red-500" />
         </div>
@@ -68,7 +69,7 @@ const BudgetStatus = () => {
           </p>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { loadLimits, addLimit, addTransaction } from "../store/data";
 import { addNotification } from "../store/notifications";
+import { IoCalendar, IoClose } from "react-icons/io5";
 
 interface BudgetProps {
   activeTab: string;
@@ -156,35 +157,49 @@ const Budget: React.FC<BudgetProps> = ({
     <div
       className={`absolute h-full w-full flex justify-center items-center ${
         isOpen ? "visible" : "hidden"
-      }`}
+      }  z-50 bg-black/60`}
     >
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-5 m-4 flex flex-col gap-4">
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold">{activeTab} Ekle</h2>
-          <button onClick={() => setIsOpen(false)}>x</button>
+          <h2 className="text-2xl font-bold dark:text-white">
+            {activeTab} Ekle
+          </h2>
+          <button onClick={() => setIsOpen(false)}>
+            <IoClose size={20} className="text-gray-500 dark:text-gray-300" />
+          </button>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <textarea
-            className="border-2 border-gray-300 rounded-md p-2"
-            placeholder="Açıklama"
-            rows={3}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
+          <div className="flex  gap-4">
+            <label htmlFor="description" className="dark:text-white">
+              Açıklama:
+            </label>
+            <textarea
+              id="description"
+              className="border-2 border-gray-300 rounded-md p-2 dark:bg-gray-800 dark:text-gray-300 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Açıklama giriniz"
+              rows={2}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
-              <label htmlFor="amount">Miktar:</label>
+              <label htmlFor="amount" className="dark:text-white">
+                Miktar:
+              </label>
               <input
                 type="number"
                 id="amount"
-                className="border-2 h-10 border-gray-300 rounded-md p-2"
-                placeholder="Miktar"
+                className="border-2 h-10 border-gray-300 rounded-md p-2 dark:bg-gray-800 dark:text-gray-300 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Miktar giriniz"
                 value={amount || ""}
                 onChange={(e) => setAmount(Number(e.target.value) || 0)}
               />
             </div>
             <div className="flex items-center gap-2">
-              <label>Kategori:</label>
+              <label htmlFor="category" className="dark:text-white">
+                Kategori:
+              </label>
               <Dropdown
                 options={categories.map((cat) => ({
                   key: cat.categoryKey,
@@ -192,30 +207,40 @@ const Budget: React.FC<BudgetProps> = ({
                 }))}
                 value={category?.key || ""}
                 onChange={handleCategoryChange}
-                placeholder="Kategori"
+                placeholder="Kategori seçiniz"
               />
             </div>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="flex items-center gap-2">
-            <label htmlFor="date">Tarih:</label>
-            <input
-              type="date"
-              id="date"
-              className="border-2 h-10 w-full border-gray-300 rounded-md p-2"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-            />
+            <label htmlFor="date" className="dark:text-white">
+              Tarih:
+            </label>
+            <div className="relative">
+              <input
+                type="date"
+                id="date"
+                className="border-2 h-10 w-full border-gray-300 rounded-md p-2 dark:bg-gray-800 dark:text-gray-300 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
+              <IoCalendar
+                size={20}
+                className="absolute top-2.5 right-3 text-gray-500 dark:text-gray-300"
+              />
+            </div>
           </div>
           {activeTab === "Gider" && (
             <div className="flex items-center gap-2">
-              <label htmlFor="limit">Limit:</label>
+              <label htmlFor="limit" className="dark:text-white">
+                Limit:
+              </label>
               <input
                 type="number"
                 id="limit"
-                className="border-2 h-10 w-full border-gray-300 rounded-md p-2"
-                placeholder="Limit belirleyin"
+                className="border-2 h-10 w-full border-gray-300 rounded-md p-2 dark:bg-gray-800 dark:text-gray-300 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Limit belirleyiniz"
                 value={valueLimit !== null ? valueLimit : ""}
                 onChange={(e) => setValueLimit(Number(e.target.value) || null)}
               />

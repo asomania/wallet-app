@@ -19,7 +19,6 @@ const ThemeSwitch = ({
   useEffect(() => {
     dispatch(loadTheme());
     switchTheme(theme as Theme);
-    console.log(theme);
   }, [theme]);
 
   return (

@@ -23,13 +23,32 @@ const Page = () => {
   const [profit, setProfit] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(0);
 
-  const itemsPerPage = 6;
+  const [itemsPerPage, setItemsPerPage] = useState(6);
 
   useEffect(() => {
     dispatch(loadTransactions());
     dispatch(loadLimits());
   }, []);
 
+  useEffect(() => {
+    const updateItemsPerPage = () => {
+      if (window.innerWidth >= 1280) {
+        setItemsPerPage(6); // Ekran genişliği 1280px ve üstü ise 6 grafik göster
+      } else if (window.innerWidth >= 768) {
+        setItemsPerPage(3); // Ekran genişliği 768px ve üstü ise 3 grafik göster
+      } else {
+        setItemsPerPage(1); // Küçük ekranlarda yalnızca 1 grafik göster
+      }
+    };
+
+    // Sayfa yüklendiğinde ve pencere boyutu değiştiğinde sayfa başına grafik sayısını güncelle
+    updateItemsPerPage();
+    window.addEventListener("resize", updateItemsPerPage);
+
+    return () => {
+      window.removeEventListener("resize", updateItemsPerPage);
+    };
+  }, []);
   useEffect(() => {
     setCategoryKeys(categories);
     setTransactionData(transactions);
@@ -74,16 +93,16 @@ const Page = () => {
   );
 
   return (
-    <div className="flex flex-col p-4 w-full">
-      <div className="flex h-[30vh] p-20 bg-white dark:bg-gray-800 rounded-lg shadow-lg gap-10">
+    <div className="flex flex-col p-4 w-full dark:bg-black ">
+      <div className="flex xl:h-[30vh] h-auto p-20 bg-white dark:bg-gray-800 rounded-lg shadow-lg gap-10">
         <button
-          className="p-2 bg-gray-200 rounded-md hover:bg-gray-300"
+          className="p-2 bg-gray-200 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
           onClick={prevPage}
           disabled={currentPage === 0}
         >
           {"<"}
         </button>
-        <div className="grid grid-cols-6 gap-4 w-full">
+        <div className="flex justify-between gap-4 w-full dark:text-white">
           {transactionData.length > 0 &&
             displayedCategories.map((category) => {
               if (transactionData.length > 0) {
@@ -113,17 +132,37 @@ const Page = () => {
               return null;
             })}
         </div>
+
         <button
-          className="p-2 bg-gray-200 rounded-md hover:bg-gray-300"
+          className="p-2 bg-gray-200 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
           onClick={nextPage}
           disabled={(currentPage + 1) * itemsPerPage >= categoryKeys.length}
         >
           {">"}
         </button>
       </div>
-      <div className="grid grid-cols-3">
-        <div className="w-full">
-          <LineChart label="Gelirler" data={profit} />
+      <div className="grid grid-cols-12 mt-10 ">
+        <div className="xl:col-span-6 lg:col-span-12 md:col-span-12 col-span-12 dark:bg-gray-800 p-10 w-full rounded-lg shadow-lg ">
+          <h2 className="text-center text-2xl font-bold dark:text-white">
+            Gelir-Gider Grafiği
+          </h2>
+          <LineChart
+            label={[
+              "Ocak",
+              "Şubat",
+              "Mart",
+              "Nisan",
+              "Mayıs",
+              "Haziran",
+              "Temmuz",
+              "Ağustos",
+              "Eylül",
+              "Ekim",
+              "Kasım",
+              "Aralık",
+            ]}
+            data={profit}
+          />
         </div>
       </div>
     </div>

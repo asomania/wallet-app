@@ -16,7 +16,7 @@ Chart.register(
   PointElement
 );
 
-const LineChart = ({ label, data }: { label: string; data: number[] }) => {
+const LineChart = ({ label, data }: { label: string[]; data: number[] }) => {
   const chartRef = useRef<HTMLCanvasElement | null>(null);
   const chartInstanceRef = useRef<Chart | null>(null);
 
@@ -30,10 +30,10 @@ const LineChart = ({ label, data }: { label: string; data: number[] }) => {
       chartInstanceRef.current = new Chart(ctx, {
         type: "line",
         data: {
-          labels: Array.from({ length: data.length }, (_, i) => `Day ${i + 1}`),
+          labels: label,
           datasets: [
             {
-              label: label,
+              label: "Gelirler",
               data: data,
               borderColor: "#3B82F6",
               tension: 0.4,

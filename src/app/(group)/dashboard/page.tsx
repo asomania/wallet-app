@@ -8,7 +8,6 @@ import { RootState } from "@/app/store/store";
 import { loadTransactions } from "@/app/store/data";
 import { useEffect, useState } from "react";
 import Notifications from "@/app/components/Notifications";
-import Limit from "@/app/components/Limit";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -16,59 +15,47 @@ const Dashboard = () => {
     (state: RootState) => state.transactions.transactions
   );
   const [isBudgetOpen, setIsBudgetOpen] = useState(false);
-  const [isLimitOpen, setIsLimitOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("Gider");
   useEffect(() => {
     dispatch(loadTransactions());
   }, []);
   return (
-    <div className="dark:bg-black relative bg-white w-full ">
+    <div className="dark:bg-black relative bg-white w-full min-h-screen">
       <Budget
         activeTab={activeTab}
         isOpen={isBudgetOpen}
         setIsOpen={setIsBudgetOpen}
         transactions={transactions}
       />
-      <Limit isOpen={isLimitOpen} setIsOpen={setIsLimitOpen} />
-      <div className="grid grid-cols-12 gap-4 max-h-[30vh] p-4">
-        <div className="bg-white col-span-7 dark:bg-gray-800 rounded-lg shadow-lg p-4 flex flex-row justify-center items-center gap-32  ">
+      <div className="grid xl:grid-cols-12 gap-4 p-4">
+        <div className="bg-white lg:h-[30vh] md:h-auto  xl:col-span-7 lg:col-span-12 md:col-span-12 flex justify-evenly items-center flex-wrap dark:bg-gray-800 rounded-lg shadow-lg p-4 ">
           <BudgetStatus />
         </div>
-        <div className="col-span-5 h-[30vh]">
-          <div className="bg-white dark:bg-gray-800  rounded-lg shadow-lg w-full h-full flex flex-col p-10 gap-4 ">
+        <div className=" md:col-span-12 lg:col-span-12 xl:col-span-5 lg:h-[30vh] h-[40vh] ">
+          <div className="bg-white dark:bg-gray-800  rounded-lg shadow-lg w-full h-full flex flex-col gap-4 p-4 ">
             <Notifications />
           </div>
         </div>
       </div>
       <div className="px-4 py-16 flex flex-col gap-4">
-        <div className="flex flex-row items-center gap-3 justify-center">
+        <div className="flex flex-row items-center gap-3 justify-end">
           <button
             onClick={() => {
               setIsBudgetOpen(true);
               setActiveTab("Gider");
             }}
-            className="bg-red-500 text-white rounded-full px-5 py-3 flex items-center gap-2 shadow-md hover:bg-red-600 transition-transform transform hover:scale-105"
+            className=" text-black  rounded-full px-5 py-3 flex items-center gap-2 shadow-md  transition-transform transform hover:scale-105 dark:bg-gray-800 dark:border dark:text-white dark:border-white "
           >
-            <span>Gider ekle</span>
+            <span>Gider Ekle</span>
           </button>
           <button
             onClick={() => {
               setIsBudgetOpen(true);
               setActiveTab("Gelir");
             }}
-            className="bg-green-500 text-white rounded-full px-5 py-3 flex items-center gap-2 shadow-md hover:bg-green-600 transition-transform transform hover:scale-105"
+            className=" text-black rounded-full px-5 py-3 flex items-center gap-2 shadow-md transition-transform  transform hover:scale-105 dark:bg-white dark:border dark:border-white dark:hover:bg-black-700 "
           >
             <span>Gelir Ekle</span>
-          </button>
-
-          <button
-            onClick={() => {
-              setIsLimitOpen(true);
-              setActiveTab("Limit");
-            }}
-            className="bg-gray-500 text-white rounded-full px-5 py-3 flex items-center gap-2 shadow-md hover:bg-gray-600 transition-transform transform hover:scale-105"
-          >
-            <span>Limit Ayarla</span>
           </button>
         </div>
         <Table

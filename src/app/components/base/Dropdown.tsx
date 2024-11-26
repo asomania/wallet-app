@@ -20,7 +20,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 }) => {
   return (
     <select
-      className="border-2 h-10 w-full border-gray-300 rounded-md p-2 bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+      className="border-2 h-10 w-full border-gray-300 rounded-md p-2 bg-white dark:bg-gray-800 dark:border-white dark:text-gray-300 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
       value={value}
       onChange={(e) => onChange(e.target.value)}
     >
@@ -28,7 +28,11 @@ const Dropdown: React.FC<DropdownProps> = ({
         {placeholder}
       </option>
       {options.map((option) => (
-        <option key={option.key} value={option.key}>
+        <option
+          key={option.key}
+          value={option.key}
+          className="bg-white dark:bg-gray-800 dark:text-gray-300"
+        >
           {option.value}
         </option>
       ))}
