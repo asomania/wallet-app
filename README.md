@@ -17,11 +17,10 @@ Bu proje, bir Flask backend uygulaması ve React frontend uygulaması ile bütç
     Flask: Python tabanlı hafif bir web framework’ü. API oluşturmak için kullanıldı.
     Flask-CORS: Cross-Origin Resource Sharing (CORS) yönetimini sağlamak için kullanıldı.
     JSON: API üzerinden veri iletimi için kullanılan format.
-        Frontend (React)
-    React.js: Kullanıcı arayüzünü oluşturmak için kullanılan JavaScript kütüphanesi.
+        Frontend (Next)
+    Next.js: Kullanıcı arayüzünü oluşturmak için kullanılan kütüphane.
     Redux: Uygulama durum yönetimi için kullanıldı.
     Chart.js: Görselleştirme amacıyla grafikler oluşturmak için kullanıldı.
-    Axios: API'den veri almak için kullanılan kütüphane.
         
         Diğer Araçlar
     npm: Node.js paket yöneticisi, frontend bağımlılıklarını yönetmek için kullanıldı.
