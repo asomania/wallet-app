@@ -194,7 +194,7 @@ const Page = () => {
             data={profit}
           />
         </div>
-        <div className="xl:col-span-6 lg:col-span-12 md:col-span-12 col-span-12 dark:bg-gray-800 p-10 w-full rounded-lg shadow-lg">
+        <div className="xl:col-span-6 lg:col-span-12 md:col-span-12 col-span-12 bg-white dark:bg-gray-800 p-10 w-full rounded-lg shadow-lg">
           <h2 className="text-center text-2xl font-bold dark:text-white mb-6">
             Öneriler
           </h2>
