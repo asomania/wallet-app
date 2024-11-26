@@ -54,7 +54,7 @@ Bu proje, bir Flask backend uygulaması ve React frontend uygulaması ile bütç
     Frontend Bağımlılıklarını Yükleyin: React uygulamasını çalıştırmak için, 
     öncelikle bağımlılıkları yüklemeniz gerekir:
     
-    npm install
+    npm install --force
     Frontend Uygulamasını Çalıştırın: React uygulamasını başlatmak için:
     
     npm start
