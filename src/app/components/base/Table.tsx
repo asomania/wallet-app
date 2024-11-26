@@ -66,25 +66,33 @@ const Table: React.FC<TableProps> = ({
           className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-600"
           style={{ ...bodyStyle }}
         >
-          {data.map((row, rowIndex) => (
-            <div
-              key={rowIndex}
-              className={`grid`}
-              style={{ gridTemplateColumns: `repeat(${headers.length}, 1fr)` }}
-            >
-              {headers.map((header, cellIndex) => (
-                <div
-                  key={cellIndex}
-                  className="text-sm text-gray-900 dark:text-gray-300 px-6 py-4"
-                >
-                  {typeof row[header.key] === "object" &&
-                  row[header.key] !== null
-                    ? (row[header.key] as { label: string }).label || "-"
-                    : row[header.key]?.toString() || "-"}
-                </div>
-              ))}
+          {data.length === 0 ? (
+            <div className="text-center text-gray-500 dark:text-gray-300 p-4">
+              Veri bulunamadı
             </div>
-          ))}
+          ) : (
+            data.map((row, rowIndex) => (
+              <div
+                key={rowIndex}
+                className={`grid`}
+                style={{
+                  gridTemplateColumns: `repeat(${headers.length}, 1fr)`,
+                }}
+              >
+                {headers.map((header, cellIndex) => (
+                  <div
+                    key={cellIndex}
+                    className="text-sm text-gray-900 dark:text-gray-300 px-6 py-4"
+                  >
+                    {typeof row[header.key] === "object" &&
+                    row[header.key] !== null
+                      ? (row[header.key] as { label: string }).label || "-"
+                      : row[header.key]?.toString() || "-"}
+                  </div>
+                ))}
+              </div>
+            ))
+          )}
         </div>
       </div>
       <div className="flex justify-end">

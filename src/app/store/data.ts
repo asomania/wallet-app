@@ -22,6 +22,7 @@ export type Limit = {
 interface TransactionState {
   transactions: Transaction[];
   limits: Limit[];
+  filteredTransactions: Transaction[];
 }
 
 const initialState: TransactionState = {
@@ -70,6 +71,7 @@ const initialState: TransactionState = {
       amount: 0,
     },
   ],
+  filteredTransactions: [],
 };
 
 const transactionSlice = createSlice({
@@ -104,9 +106,38 @@ const transactionSlice = createSlice({
       }
       localStorage.setItem("limits", JSON.stringify(state.limits));
     },
+    searchTransactions: (
+      state,
+      action: PayloadAction<{ startDate: string; endDate: string }>
+    ) => {
+      state.filteredTransactions = state.transactions.filter((transaction) => {
+        const transactionDate = new Date(transaction.date);
+        return (
+          transactionDate >= new Date(action.payload.startDate) &&
+          transactionDate <= new Date(action.payload.endDate)
+        );
+      });
+    },
+    clearSearch: (state) => {
+      state.filteredTransactions = [];
+    },
+    searchByDescription: (state, action: PayloadAction<string>) => {
+      state.filteredTransactions = state.transactions.filter((transaction) =>
+        transaction.description
+          .toLowerCase()
+          .includes(action.payload.toLowerCase())
+      );
+    },
   },
 });
 
-export const { addTransaction, loadTransactions, addLimit, loadLimits } =
-  transactionSlice.actions;
+export const {
+  addTransaction,
+  loadTransactions,
+  addLimit,
+  loadLimits,
+  searchTransactions,
+  clearSearch,
+  searchByDescription,
+} = transactionSlice.actions;
 export default transactionSlice.reducer;
